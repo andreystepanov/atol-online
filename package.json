@@ -1,7 +1,7 @@
 {
   "name": "atol-online",
   "description": "Atol.Online for Node JS",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "main": "dist/index.js",
   "repository": {
     "url": "git://github.com/andreystepanov/atol-online.git"
@@ -9,6 +9,12 @@
   "bugs": {
     "url": "https://github.com/andreystepanov/atol-online/issues"
   },
+  "keywords": [
+    "atol",
+    "atol-online",
+    "atol.online",
+    "api"
+  ],
   "author": "Andrey Stepanov <me@andreystepanov.com> (https://andreystepanov.com/)",
   "license": "MIT",
   "scripts": {
