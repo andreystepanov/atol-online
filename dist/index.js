@@ -1,10 +1,5 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
 var _axios = _interopRequireDefault(require("axios"));
 
 var _underscore = _interopRequireDefault(require("underscore"));
@@ -44,8 +39,7 @@ http.interceptors.response.use(res => {
 
   return Promise.reject(error);
 });
-
-class Atol {
+module.exports = class Atol {
   constructor(options = {}) {
     const optns = _underscore.default.defaults(options, {
       livemode: true,
@@ -391,6 +385,4 @@ class Atol {
     return Promise.reject(new Error(message));
   }
 
-}
-
-exports.default = Atol;
+};

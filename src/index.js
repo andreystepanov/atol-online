@@ -34,7 +34,7 @@ http.interceptors.response.use(
   },
 )
 
-export default class Atol {
+module.exports = class Atol {
   constructor(options = {}) {
     const optns = underscore.defaults(options, {
       livemode: true,

@@ -1,7 +1,7 @@
 {
   "name": "atol-online",
   "description": "Atol.Online for Node JS",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "dist/index.js",
   "repository": {
     "url": "git://github.com/andreystepanov/atol-online.git"
@@ -15,6 +15,7 @@
     "atol.online",
     "api"
   ],
+  "homepage": "https://github.com/andreystepanov/atol-online#readme",
   "author": "Andrey Stepanov <me@andreystepanov.com> (https://andreystepanov.com/)",
   "license": "MIT",
   "scripts": {
@@ -22,7 +23,7 @@
     "test:watch": "yarn test -- --watch",
     "build": "yarn prettier && yarn test && ./node_modules/.bin/babel src/index.js --out-file dist/index.js",
     "prepublish": "yarn run build",
-    "prettier": "prettier --config ./.prettierrc --write src/index.js src/__tests__/index.js"
+    "prettier": "./node_modules/.bin/prettier --config ./.prettierrc --write src/index.js src/__tests__/index.js"
   },
   "dependencies": {
     "axios": "^0.18.0",
