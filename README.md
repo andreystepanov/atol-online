@@ -38,8 +38,8 @@ atol.sell
   .create({
     id: 'order_id',
     customer: {
-      email: 'andreystepanov.blog@gmail.com',
-      phone: '+380939777959',
+      email: 'example@domain.ru',
+      phone: '+79627772211',
     },
     items: [
       {
@@ -72,8 +72,8 @@ atol.sell
   .refund({
     id: 'order_id',
     customer: {
-      email: 'andreystepanov.blog@gmail.com',
-      phone: '+380939777959',
+      email: 'example@domain.ru',
+      phone: '+79627772211',
     },
     items: [
       {
