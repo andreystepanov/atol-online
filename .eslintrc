@@ -1,0 +1,64 @@
+{
+    "extends": [
+      "airbnb-base",
+      "plugin:import/errors",
+      "plugin:import/warnings",
+      "prettier",
+      "plugin:flowtype/recommended"
+    ],
+    "settings": {
+      "import/resolver": {
+        "node": {
+          "paths": ["./"]
+        }
+      }
+    },
+    "rules": {
+        camelcase: ["error", { ignoreDestructuring: true, "properties": "never" }],
+        space-before-function-paren: ["error", {
+          "anonymous": "always",
+          "named": "never",
+          "asyncArrow": "always"
+        }],
+        "semi": ["error", "never"],
+        "no-console": "off",
+        "comma-dangle": "off",
+        "max-len": "off",
+        "no-unexpected-multiline": "error",
+        no-param-reassign: ["error", { "props": false }],
+        "flowtype/require-valid-file-annotation": [2, "never", { "annotationStyle": "line" }]
+    },
+    "env": {
+        "node": true,
+        "jest": true,
+        "es6": true
+    },
+    "parser": "babel-eslint",
+    "overrides": [
+      {
+        "files": ["models/*.js"],
+        "rules": {
+          "no-param-reassign": "off",
+          "func-names": "off"
+        }
+      },
+      {
+        "files": ["**/*.test.js", "jest.*.js"],
+        "rules": {
+          "no-unused-vars": "off"
+        }
+      },
+      {
+        "files": ["src/index.js"],
+        "rules": {
+          "arrow-parens": [2, "as-needed"],
+          "eqeqeq": 0,
+          "no-return-assign": 0, // fails for arrow functions
+          "no-var": 2, // "semi": [2, "always"],
+          "arrow-spacing": 2,
+          "dot-location": [2, "property"],
+          "prefer-arrow-callback": 2
+        }
+      }
+    ]
+}
