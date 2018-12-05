@@ -21,7 +21,7 @@ yarn add atol-online
 Инициализация клиента:
 
 ```javascript
-const Atol = request('atol-online')
+const Atol = require('atol-online')
 
 const atol = new Atol({
   email: 'support@domain.ru',
