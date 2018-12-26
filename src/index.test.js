@@ -1,7 +1,8 @@
-require('dotenv').config()
-import Atol from '..'
 import moment from 'moment'
 import uuid from 'uuid/v4'
+import Atol from './index'
+
+require('dotenv').config()
 
 const timestampWithoutSecondsFormat = 'DD.MM.YYYY HH:mm'
 const timestampFormat = `${timestampWithoutSecondsFormat}:ss`
@@ -17,8 +18,8 @@ const options = {
 const payload = {
   id: 'order_id',
   customer: {
-    email: 'andreystepanov.blog@gmail.com',
-    phone: '+380939777959',
+    email: 'example@domain.ru',
+    phone: '+79627772211',
   },
   items: [
     {
@@ -64,19 +65,33 @@ const correction = () => generatePayload(correctionPayload)
 const log = jest.fn()
 
 let atol
+let atolAgent
 
 // const instance = new Atol({})
 
 beforeEach(() => {
   atol = new Atol(options)
+  atolAgent = new Atol({
+    ...options,
+    agent: {
+      type: 'paying_agent',
+      operation: 'Комиссия за использование сервиса',
+      phones: '+79627772211, +79627772200',
+    },
+    supplier: {
+      name: 'ООО «Ромашка»',
+      phones: '+79627772211, +79627772200',
+      inn: '454545454545',
+    },
+  })
 })
 
 test('Atol exists', () => {
   expect(Atol).toBeDefined()
 })
 
-test('Receives all the options', () => {
-  expect(atol).toMatchSnapshot()
+test('sets correct options', () => {
+  expect(atolAgent).toMatchSnapshot()
 })
 
 describe('authenticate', () => {
@@ -149,6 +164,129 @@ describe('preparePurchaseOrRefund', () => {
 
     expect(result.timestamp).toEqual(timestamp)
     expect(result).toMatchSnapshot()
+  })
+
+  test('sets agent info', async () => {
+    const { timestamp, ...result } = await atolAgent.preparePurchaseOrRefund({
+      ...payload,
+    })
+
+    expect(result).toMatchSnapshot()
+  })
+
+  test('rewrites default agent and supplier info', async () => {
+    const { timestamp, ...result } = await atolAgent.preparePurchaseOrRefund({
+      ...payload,
+      items: payload.items.map(item => ({
+        ...item,
+        agent: {
+          phones: '+79627772200',
+        },
+        supplier: {
+          phones: '+79627772200',
+        },
+      })),
+    })
+
+    expect(result).toMatchSnapshot()
+  })
+})
+
+describe('prepareAgent', () => {
+  const agentPhones = `${payload.customer.phone},${payload.customer.phone}`
+
+  test('exists', async () => {
+    expect(Atol.prepareAgent).toBeDefined()
+    expect(typeof Atol.prepareAgent).toBe('function')
+  })
+
+  test('returns prepared data for `paying_agent`', async () => {
+    const agent = Atol.prepareAgent({
+      type: 'paying_agent',
+      phones: agentPhones,
+      operation: 'Some operation',
+      extra_field: true,
+    })
+
+    expect(agent).toMatchSnapshot()
+  })
+
+  test('returns prepared data for `receive_payments_operator`', async () => {
+    const agent = Atol.prepareAgent({
+      type: 'receive_payments_operator',
+      phones: agentPhones,
+      extra_field: true,
+    })
+
+    expect(agent).toMatchSnapshot()
+  })
+
+  test('returns prepared data for `money_transfer_operator`', async () => {
+    const agent = Atol.prepareAgent({
+      type: 'money_transfer_operator',
+      phones: agentPhones,
+      name: 'Some name',
+      address: 'Some address',
+      inn: 'Some INN',
+      extra_field: true,
+    })
+
+    expect(agent).toMatchSnapshot()
+  })
+
+  test('returns prepared data other types', async () => {
+    const agent = Atol.prepareAgent({
+      type: 'another',
+      phones: agentPhones,
+      extra_field: true,
+    })
+
+    expect(agent).toMatchSnapshot()
+  })
+})
+
+describe('prepareItems', () => {
+  test('returns simple prepared items', () => {
+    const preItems = atol.prepareItems(payload.items)
+
+    expect(preItems).toMatchSnapshot()
+  })
+
+  test('returns prepared items for agents', () => {
+    const preItems = atolAgent.prepareItems(payload.items)
+
+    expect(preItems).toMatchSnapshot()
+  })
+
+  test('returns prepared items (agent data ignored)', () => {
+    const preItems = atolAgent.prepareItems(
+      payload.items.map(item => ({
+        ...item,
+        agent: false,
+      })),
+    )
+
+    expect(preItems).toMatchSnapshot()
+  })
+})
+
+describe('prepareSupplier', () => {
+  const supplierPhones = `${payload.customer.phone},${payload.customer.phone}`
+
+  test('exists', async () => {
+    expect(Atol.prepareSupplier).toBeDefined()
+    expect(typeof Atol.prepareSupplier).toBe('function')
+  })
+
+  test('returns prepared supplier', async () => {
+    const supplier = Atol.prepareSupplier({
+      name: 'Supplier name',
+      phones: supplierPhones,
+      inn: 'Supplier inn',
+      extra_field: true, // ignored
+    })
+
+    expect(supplier).toMatchSnapshot()
   })
 })
 
@@ -224,6 +362,26 @@ describe.skip(
 
         externalId = data.id
         sellId = response.body.uuid
+      })
+
+      test('returns successful response for agent sell', async () => {
+        const data = generatePayload()
+        const { success, response, request } = await atolAgent.sell
+          .create({
+            ...data,
+          })
+          .catch(error => error)
+
+        // console.log(response)
+        // console.log(request.body.receipt.items)
+
+        expect(success).toBe(true)
+
+        expect(response.status).toBe(200)
+        expect(response.body.uuid).toBeDefined()
+        expect(response.body.status).toBeDefined()
+        expect(response.body.error).toBeNull()
+        expect(response.body.timestamp).toBeDefined()
       })
 
       test('returns data about sell by uuid', async () => {

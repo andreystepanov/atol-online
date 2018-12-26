@@ -51,15 +51,20 @@ module.exports = class Atol {
       sno: process.env.ATOL_COMPANY_SNO,
       url: process.env.ATOL_COMPANY_URL,
       vat: process.env.ATOL_VAT || 'none',
-      agent_type: process.env.ATOL_AGENT_TYPE,
-      callback_url: null
+      callback_url: null,
+      supplier: null
     });
 
+    optns.agent = _underscore.default.defaults(optns.agent, {
+      type: process.env.ATOL_AGENT_TYPE,
+      phones: process.env.ATOL_AGENT_PHONES
+    });
     const agentTypes = ['bank_paying_agent', 'bank_paying_subagent', 'paying_agent', 'paying_subagent', 'attorney', 'comission_agent', 'another'];
     const vats = {
       none: 'none',
       10: 'vat10',
       18: 'vat18',
+      20: 'vat20',
       '10/110': 'vat110',
       '18/118': 'vat118'
     };
@@ -93,9 +98,9 @@ module.exports = class Atol {
       console.warn('WARN: Vat should be one of: ', Object.keys(vats).join());
     }
 
-    const validAgentType = agentTypes.includes(optns.agent_type);
+    const validAgentType = agentTypes.includes(optns.agent.type);
 
-    if (optns.agent_type && validAgentType === false) {
+    if (optns.agent.type && validAgentType === false) {
       console.warn('WARN: Agent type should be one of: ', agentTypes.join());
     }
 
@@ -107,6 +112,10 @@ module.exports = class Atol {
       inn: optns.inn,
       payment_address: optns.url
     };
+    this.agent = validAgentType ? Atol.prepareAgent(optns.agent) : null;
+    this._originalAgent = optns.agent;
+    this.supplier = Atol.prepareSupplier(optns.supplier);
+    this._originalSupplier = optns.supplier;
 
     if (optns.sno) {
       if (snoList.includes(optns.sno)) {
@@ -117,7 +126,6 @@ module.exports = class Atol {
     }
 
     this.vatType = vats[optns.vat];
-    this.agentType = validAgentType ? optns.agent_type : null;
     this.apiToken = null;
     this.apiVersion = 'v4';
     this.apiUrl = `https://${!!optns.livemode ? '' : 'test'}online.atol.ru/possystem/${this.apiVersion}`;
@@ -186,7 +194,7 @@ module.exports = class Atol {
         body: requestBody
       },
       response: {
-        status: status,
+        status,
         status_text: response.statusText,
         smoke_screen: !status,
         headers: response.headers,
@@ -241,6 +249,52 @@ module.exports = class Atol {
     return (date.isValid() ? date : (0, _moment.default)()).format('DD.MM.YYYY HH:mm:ss');
   }
 
+  static formatPhones(phones) {
+    if (typeof phones === 'string') {
+      return phones.replace(/[ ]/g, '').split(',');
+    }
+
+    return phones;
+  }
+
+  static prepareAgent({
+    type,
+    phones,
+    ...rest
+  } = {}) {
+    const formattedPhones = Atol.formatPhones(phones);
+    const agent = {
+      type
+    };
+    const advancedTypes = ['paying_agent', 'receive_payments_operator', 'money_transfer_operator'];
+    const allowedFields = [];
+
+    if (type === 'paying_agent') {
+      allowedFields.push('operation');
+    } else if (type === 'money_transfer_operator') {
+      allowedFields.push('name', 'address', 'inn');
+    }
+
+    if (advancedTypes.includes(type)) {
+      agent[type] = { ..._underscore.default.pick(rest, allowedFields),
+        phones: formattedPhones
+      };
+    }
+
+    return agent;
+  }
+
+  static prepareSupplier(data) {
+    if (!data) {
+      return null;
+    }
+
+    const supplier = { ...data
+    };
+    supplier.phones = Atol.formatPhones(supplier.phones || null);
+    return _underscore.default.pick(supplier, ['phones', 'name', 'inn']);
+  }
+
   preparePurchaseOrRefund({
     id,
     timestamp,
@@ -252,7 +306,7 @@ module.exports = class Atol {
   } = {}) {
     const items = this.prepareItems(list);
     const paymentTotal = items.reduce((total, current) => parseFloat((total + current.sum).toFixed(2)), 0);
-    return {
+    const data = {
       external_id: id,
       receipt: {
         client,
@@ -269,6 +323,7 @@ module.exports = class Atol {
       },
       timestamp: Atol.timestamp(timestamp, timestampFormat)
     };
+    return data;
   }
 
   prepareItems(items = []) {
@@ -278,14 +333,18 @@ module.exports = class Atol {
       quantity = 1,
       unit_label: unitLabel,
       name,
-      price: itemPrice = 0
+      price: itemPrice = 0,
+      agent = null,
+      supplier = null
     }) => {
       const price = parseFloat(itemPrice.toFixed(2));
       const sum = parseFloat((price * quantity).toFixed(2));
       const {
         vatType
       } = this;
-      return {
+      const agentInfo = this.agent && agent !== false ? Atol.prepareAgent(_underscore.default.defaults(agent, this._originalAgent)) : null;
+      const supplierInfo = agentInfo ? Atol.prepareSupplier(_underscore.default.defaults(supplier, this._originalSupplier)) : null;
+      const item = {
         name,
         price,
         quantity,
@@ -297,8 +356,17 @@ module.exports = class Atol {
         vat: {
           type: vatType,
           sum: Atol.vat(sum, vatType)
-        }
+        },
+        agent_info: agentInfo,
+        supplier_info: supplierInfo
       };
+
+      if (!item.agent_info) {
+        delete item.agent_info;
+        delete item.supplier_info;
+      }
+
+      return item;
     });
   }
 
@@ -346,7 +414,8 @@ module.exports = class Atol {
   static vat(amount = 0, vatType) {
     const deviders = {
       vat10: 0.1,
-      vat18: 0.18
+      vat18: 0.18,
+      vat20: 0.2
     };
 
     if (vatType === 'none' || !(vatType in deviders)) {

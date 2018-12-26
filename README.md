@@ -65,6 +65,58 @@ atol.sell
   })
 ```
 
+Передаем данные об агенте:
+
+```javascript
+const atol = new Atol({
+  ...,
+  agent: {
+    type: 'paying_agent',
+    operation: 'Комиссия за использование сервиса',
+    phones: ['+79627772299']
+  },
+  supplier: {
+    name: 'ООО «Ромашка»',
+    phones: ['+79627772233', '+79627772200'],
+    inn: '424242424242',
+  }
+})
+
+atol.sell.create({
+  id: 'order_id',
+  customer: {
+    email: 'example@domain.ru',
+    phone: '+79627772211',
+  },
+  items: [
+    {
+      type: 'service',
+      name: 'Название товара 1',
+      price: 100.0,
+      quantity: 2,
+      unit_label: 'шт.',
+      agent: false // не передаем данные агента для этого товара
+    },
+    {
+      type: 'service',
+      name: 'Название товара 2',
+      price: 50.0,
+      unit_label: 'шт.',
+      agent: {
+        // передаем другие данные агента
+        // для этого товара
+        ...
+      },
+      supplier: {
+        // передаем другие данные поставщика
+        // для этого товара
+        ...
+      }
+    },
+  ]
+}).
+```
+
 Отправляем запрос для чека «Возврат прихода»:
 
 ```javascript
@@ -147,6 +199,8 @@ async function purchase(payload) {
 
 ## Конфигурация
 
+Доступы к тестовой среде можно найти ниже [в описании](#processenv).
+
 ```javascript
 const atol = new Atol({
   // Логин для авторизации
@@ -173,7 +227,8 @@ const atol = new Atol({
 
   // Возможные варианты:
   // 10
-  // 18
+  // 18 (временно присутствует)
+  // 20
   // `10/110`
   // `18/118`
   // по-молчанию `none`
@@ -189,15 +244,38 @@ const atol = new Atol({
   // об изменении статуса
   callback_url: 'https://domain.ru/callback',
 
-  // Возможные варианты:
-  // bank_paying_agent
-  // bank_paying_subagent
-  // paying_agent
-  // paying_subagent
-  // attorney
-  // comission_agent
-  // another
-  agent_type: '',
+  // Передаем данные агента
+  agent: {
+    // Тип агента. Возможные варианты:
+    // bank_paying_agent
+    // bank_paying_subagent
+    // paying_agent
+    // paying_subagent
+    // attorney
+    // comission_agent
+    // another
+    type: null,
+
+    // Массив или строка с `,` в качестве разделителя, например:
+    // [ '+79627772211', '+79627772233' ]
+    // `+79627772211,+79627772233`
+    phones: [],
+
+    //...
+    // другие параметры из документации Атола
+  },
+
+  // Передаем данные поставщика
+  supplier: {
+    // Название компании поставшика
+    name: 'ООО «Ромашка»',
+
+    // Телефоны поставщика
+    phones: '+79627772211, +79627772200',
+
+    // ИНН поставщика
+    inn: '454545454545',
+  },
 
   // Если указать true, то данные будут
   // отправляться в тестовую среду Атол.Онлайн.
@@ -208,16 +286,17 @@ const atol = new Atol({
 
 ## process.env
 
-Все конфигурации так же могут (и должны) быть указаны в файле `.env` или передаваться динамически. Ниже приведены названия переменных:
+Все конфигурации так же могут (и должны) быть указаны в файле `.env` или передаваться динамически. Ниже приведены названия переменных и данные тестовой среды Атола (ребята из тех. поддержки любезно поделились ими)
 
 ```
 ATOL_VAT=
 ATOL_AGENT_TYPE=
-ATOL_COMPANY_INN=
+ATOL_AGENT_PHONES=
 ATOL_COMPANY_SNO=
-ATOL_COMPANY_URL=
-ATOL_COMPANY_EMAIL=
-ATOL_GROUP=
-ATOL_LOGIN=
-ATOL_PASSWORD=
+ATOL_LOGIN=v4-online-atol-ru
+ATOL_PASSWORD=iGFFuihss
+ATOL_GROUP=v4-online-atol-ru_4179
+ATOL_COMPANY_URL=https://v4.online.atol.ru
+ATOL_COMPANY_EMAIL=email@atol.ru
+ATOL_COMPANY_INN=5544332219
 ```

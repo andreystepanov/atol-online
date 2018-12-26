@@ -1,0 +1,617 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`prepareAgent returns prepared data for \`money_transfer_operator\` 1`] = `
+Object {
+  "money_transfer_operator": Object {
+    "address": "Some address",
+    "inn": "Some INN",
+    "name": "Some name",
+    "phones": Array [
+      "+79627772211",
+      "+79627772211",
+    ],
+  },
+  "type": "money_transfer_operator",
+}
+`;
+
+exports[`prepareAgent returns prepared data for \`paying_agent\` 1`] = `
+Object {
+  "paying_agent": Object {
+    "operation": "Some operation",
+    "phones": Array [
+      "+79627772211",
+      "+79627772211",
+    ],
+  },
+  "type": "paying_agent",
+}
+`;
+
+exports[`prepareAgent returns prepared data for \`receive_payments_operator\` 1`] = `
+Object {
+  "receive_payments_operator": Object {
+    "phones": Array [
+      "+79627772211",
+      "+79627772211",
+    ],
+  },
+  "type": "receive_payments_operator",
+}
+`;
+
+exports[`prepareAgent returns prepared data other types 1`] = `
+Object {
+  "type": "another",
+}
+`;
+
+exports[`prepareCorrection returns prepared data 1`] = `
+Object {
+  "correction": Object {
+    "company": Object {
+      "email": "support@domain.ru",
+      "inn": "5544332219",
+      "payment_address": "https://domain.ru",
+    },
+    "correction_info": Object {
+      "base_date": "[sanitized]",
+      "base_name": "Описание коррекции",
+      "base_number": "base_number",
+      "type": "instruction",
+    },
+    "payments": Array [
+      Object {
+        "sum": 100,
+        "type": 2,
+      },
+    ],
+    "vats": Array [
+      Object {
+        "sum": 18,
+        "type": "vat18",
+      },
+    ],
+  },
+  "external_id": "correction_id",
+  "service": Object {
+    "callback_url": "https://domain.ru/callback",
+  },
+}
+`;
+
+exports[`prepareCorrection sets custom timestamp and callback_url 1`] = `
+Object {
+  "correction": Object {
+    "company": Object {
+      "email": "support@domain.ru",
+      "inn": "5544332219",
+      "payment_address": "https://domain.ru",
+    },
+    "correction_info": Object {
+      "base_date": "28.11.2017",
+      "base_name": "Описание коррекции",
+      "base_number": "base_number",
+      "type": "instruction",
+    },
+    "payments": Array [
+      Object {
+        "sum": 100,
+        "type": 2,
+      },
+    ],
+    "vats": Array [
+      Object {
+        "sum": 18,
+        "type": "vat18",
+      },
+    ],
+  },
+  "external_id": "correction_id",
+  "service": Object {
+    "callback_url": "https://domain.ru/callback/new",
+  },
+  "timestamp": "28.11.2017 23:49:45",
+}
+`;
+
+exports[`prepareItems returns prepared items (agent data ignored) 1`] = `
+Array [
+  Object {
+    "measurement_unit": "шт.",
+    "name": "Товар 1",
+    "payment_method": "full_prepayment",
+    "payment_object": "service",
+    "price": 100,
+    "quantity": 2,
+    "sum": 200,
+    "vat": Object {
+      "sum": 36,
+      "type": "vat18",
+    },
+  },
+  Object {
+    "measurement_unit": "шт.",
+    "name": "Товар 2",
+    "payment_method": "full_prepayment",
+    "payment_object": "service",
+    "price": 50,
+    "quantity": 1,
+    "sum": 50,
+    "vat": Object {
+      "sum": 9,
+      "type": "vat18",
+    },
+  },
+]
+`;
+
+exports[`prepareItems returns prepared items for agents 1`] = `
+Array [
+  Object {
+    "agent_info": Object {
+      "paying_agent": Object {
+        "operation": "Комиссия за использование сервиса",
+        "phones": Array [
+          "+79627772211",
+          "+79627772200",
+        ],
+      },
+      "type": "paying_agent",
+    },
+    "measurement_unit": "шт.",
+    "name": "Товар 1",
+    "payment_method": "full_prepayment",
+    "payment_object": "service",
+    "price": 100,
+    "quantity": 2,
+    "sum": 200,
+    "supplier_info": Object {
+      "inn": "454545454545",
+      "name": "ООО «Ромашка»",
+      "phones": Array [
+        "+79627772211",
+        "+79627772200",
+      ],
+    },
+    "vat": Object {
+      "sum": 36,
+      "type": "vat18",
+    },
+  },
+  Object {
+    "agent_info": Object {
+      "paying_agent": Object {
+        "operation": "Комиссия за использование сервиса",
+        "phones": Array [
+          "+79627772211",
+          "+79627772200",
+        ],
+      },
+      "type": "paying_agent",
+    },
+    "measurement_unit": "шт.",
+    "name": "Товар 2",
+    "payment_method": "full_prepayment",
+    "payment_object": "service",
+    "price": 50,
+    "quantity": 1,
+    "sum": 50,
+    "supplier_info": Object {
+      "inn": "454545454545",
+      "name": "ООО «Ромашка»",
+      "phones": Array [
+        "+79627772211",
+        "+79627772200",
+      ],
+    },
+    "vat": Object {
+      "sum": 9,
+      "type": "vat18",
+    },
+  },
+]
+`;
+
+exports[`prepareItems returns simple prepared items 1`] = `
+Array [
+  Object {
+    "measurement_unit": "шт.",
+    "name": "Товар 1",
+    "payment_method": "full_prepayment",
+    "payment_object": "service",
+    "price": 100,
+    "quantity": 2,
+    "sum": 200,
+    "vat": Object {
+      "sum": 36,
+      "type": "vat18",
+    },
+  },
+  Object {
+    "measurement_unit": "шт.",
+    "name": "Товар 2",
+    "payment_method": "full_prepayment",
+    "payment_object": "service",
+    "price": 50,
+    "quantity": 1,
+    "sum": 50,
+    "vat": Object {
+      "sum": 9,
+      "type": "vat18",
+    },
+  },
+]
+`;
+
+exports[`preparePurchaseOrRefund returns prepared data 1`] = `
+Object {
+  "external_id": "order_id",
+  "receipt": Object {
+    "client": Object {
+      "email": "example@domain.ru",
+      "phone": "+79627772211",
+    },
+    "company": Object {
+      "email": "support@domain.ru",
+      "inn": "5544332219",
+      "payment_address": "https://domain.ru",
+    },
+    "items": Array [
+      Object {
+        "measurement_unit": "шт.",
+        "name": "Товар 1",
+        "payment_method": "full_prepayment",
+        "payment_object": "service",
+        "price": 100,
+        "quantity": 2,
+        "sum": 200,
+        "vat": Object {
+          "sum": 36,
+          "type": "vat18",
+        },
+      },
+      Object {
+        "measurement_unit": "шт.",
+        "name": "Товар 2",
+        "payment_method": "full_prepayment",
+        "payment_object": "service",
+        "price": 50,
+        "quantity": 1,
+        "sum": 50,
+        "vat": Object {
+          "sum": 9,
+          "type": "vat18",
+        },
+      },
+    ],
+    "payments": Array [
+      Object {
+        "sum": 250,
+        "type": 1,
+      },
+    ],
+    "total": 250,
+  },
+  "service": Object {
+    "callback_url": "https://domain.ru/callback",
+  },
+}
+`;
+
+exports[`preparePurchaseOrRefund rewrites default agent and supplier info 1`] = `
+Object {
+  "external_id": "order_id",
+  "receipt": Object {
+    "client": Object {
+      "email": "example@domain.ru",
+      "phone": "+79627772211",
+    },
+    "company": Object {
+      "email": "support@domain.ru",
+      "inn": "5544332219",
+      "payment_address": "https://domain.ru",
+    },
+    "items": Array [
+      Object {
+        "agent_info": Object {
+          "paying_agent": Object {
+            "operation": "Комиссия за использование сервиса",
+            "phones": Array [
+              "+79627772200",
+            ],
+          },
+          "type": "paying_agent",
+        },
+        "measurement_unit": "шт.",
+        "name": "Товар 1",
+        "payment_method": "full_prepayment",
+        "payment_object": "service",
+        "price": 100,
+        "quantity": 2,
+        "sum": 200,
+        "supplier_info": Object {
+          "inn": "454545454545",
+          "name": "ООО «Ромашка»",
+          "phones": Array [
+            "+79627772200",
+          ],
+        },
+        "vat": Object {
+          "sum": 36,
+          "type": "vat18",
+        },
+      },
+      Object {
+        "agent_info": Object {
+          "paying_agent": Object {
+            "operation": "Комиссия за использование сервиса",
+            "phones": Array [
+              "+79627772200",
+            ],
+          },
+          "type": "paying_agent",
+        },
+        "measurement_unit": "шт.",
+        "name": "Товар 2",
+        "payment_method": "full_prepayment",
+        "payment_object": "service",
+        "price": 50,
+        "quantity": 1,
+        "sum": 50,
+        "supplier_info": Object {
+          "inn": "454545454545",
+          "name": "ООО «Ромашка»",
+          "phones": Array [
+            "+79627772200",
+          ],
+        },
+        "vat": Object {
+          "sum": 9,
+          "type": "vat18",
+        },
+      },
+    ],
+    "payments": Array [
+      Object {
+        "sum": 250,
+        "type": 1,
+      },
+    ],
+    "total": 250,
+  },
+  "service": Object {
+    "callback_url": "https://domain.ru/callback",
+  },
+}
+`;
+
+exports[`preparePurchaseOrRefund sets agent info 1`] = `
+Object {
+  "external_id": "order_id",
+  "receipt": Object {
+    "client": Object {
+      "email": "example@domain.ru",
+      "phone": "+79627772211",
+    },
+    "company": Object {
+      "email": "support@domain.ru",
+      "inn": "5544332219",
+      "payment_address": "https://domain.ru",
+    },
+    "items": Array [
+      Object {
+        "agent_info": Object {
+          "paying_agent": Object {
+            "operation": "Комиссия за использование сервиса",
+            "phones": Array [
+              "+79627772211",
+              "+79627772200",
+            ],
+          },
+          "type": "paying_agent",
+        },
+        "measurement_unit": "шт.",
+        "name": "Товар 1",
+        "payment_method": "full_prepayment",
+        "payment_object": "service",
+        "price": 100,
+        "quantity": 2,
+        "sum": 200,
+        "supplier_info": Object {
+          "inn": "454545454545",
+          "name": "ООО «Ромашка»",
+          "phones": Array [
+            "+79627772211",
+            "+79627772200",
+          ],
+        },
+        "vat": Object {
+          "sum": 36,
+          "type": "vat18",
+        },
+      },
+      Object {
+        "agent_info": Object {
+          "paying_agent": Object {
+            "operation": "Комиссия за использование сервиса",
+            "phones": Array [
+              "+79627772211",
+              "+79627772200",
+            ],
+          },
+          "type": "paying_agent",
+        },
+        "measurement_unit": "шт.",
+        "name": "Товар 2",
+        "payment_method": "full_prepayment",
+        "payment_object": "service",
+        "price": 50,
+        "quantity": 1,
+        "sum": 50,
+        "supplier_info": Object {
+          "inn": "454545454545",
+          "name": "ООО «Ромашка»",
+          "phones": Array [
+            "+79627772211",
+            "+79627772200",
+          ],
+        },
+        "vat": Object {
+          "sum": 9,
+          "type": "vat18",
+        },
+      },
+    ],
+    "payments": Array [
+      Object {
+        "sum": 250,
+        "type": 1,
+      },
+    ],
+    "total": 250,
+  },
+  "service": Object {
+    "callback_url": "https://domain.ru/callback",
+  },
+}
+`;
+
+exports[`preparePurchaseOrRefund sets custom timestamp and callback_url 1`] = `
+Object {
+  "external_id": "order_id",
+  "receipt": Object {
+    "client": Object {
+      "email": "example@domain.ru",
+      "phone": "+79627772211",
+    },
+    "company": Object {
+      "email": "support@domain.ru",
+      "inn": "5544332219",
+      "payment_address": "https://domain.ru",
+    },
+    "items": Array [
+      Object {
+        "measurement_unit": "шт.",
+        "name": "Товар 1",
+        "payment_method": "full_prepayment",
+        "payment_object": "service",
+        "price": 100,
+        "quantity": 2,
+        "sum": 200,
+        "vat": Object {
+          "sum": 36,
+          "type": "vat18",
+        },
+      },
+      Object {
+        "measurement_unit": "шт.",
+        "name": "Товар 2",
+        "payment_method": "full_prepayment",
+        "payment_object": "service",
+        "price": 50,
+        "quantity": 1,
+        "sum": 50,
+        "vat": Object {
+          "sum": 9,
+          "type": "vat18",
+        },
+      },
+    ],
+    "payments": Array [
+      Object {
+        "sum": 250,
+        "type": 1,
+      },
+    ],
+    "total": 250,
+  },
+  "service": Object {
+    "callback_url": "https://domain.ru/callback/new",
+  },
+  "timestamp": "28.11.2017 23:49:45",
+}
+`;
+
+exports[`prepareSupplier returns prepared supplier 1`] = `
+Object {
+  "inn": "Supplier inn",
+  "name": "Supplier name",
+  "phones": Array [
+    "+79627772211",
+    "+79627772211",
+  ],
+}
+`;
+
+exports[`sending real request to API correction returns validation error 1`] = `"Ошибка валидации входного чека. Ошибочные поля : PropertyRequired: #/external_id; PropertyRequired: #/correction.correction_info.base_number; PropertyRequired: #/correction.correction_info.base_name"`;
+
+exports[`sending real request to API refund returns validation error 1`] = `"Ошибка валидации входного чека. Ошибочные поля : PropertyRequired: #/external_id; PropertyRequired: #/receipt.client; TooFewItems: #/receipt.items"`;
+
+exports[`sending real request to API sell and report returns validation error 1`] = `"Ошибка валидации входного чека. Ошибочные поля : PropertyRequired: #/external_id; PropertyRequired: #/receipt.client; TooFewItems: #/receipt.items"`;
+
+exports[`sets correct options 1`] = `
+Atol {
+  "_originalAgent": Object {
+    "operation": "Комиссия за использование сервиса",
+    "phones": "+79627772211, +79627772200",
+    "type": "paying_agent",
+  },
+  "_originalSupplier": Object {
+    "inn": "454545454545",
+    "name": "ООО «Ромашка»",
+    "phones": "+79627772211, +79627772200",
+  },
+  "agent": Object {
+    "paying_agent": Object {
+      "operation": "Комиссия за использование сервиса",
+      "phones": Array [
+        "+79627772211",
+        "+79627772200",
+      ],
+    },
+    "type": "paying_agent",
+  },
+  "apiToken": null,
+  "apiUrl": "https://testonline.atol.ru/possystem/v4",
+  "apiVersion": "v4",
+  "callbackUrl": "https://domain.ru/callback",
+  "company": Object {
+    "email": "support@domain.ru",
+    "inn": "5544332219",
+    "payment_address": "https://domain.ru",
+  },
+  "group": "v4-online-atol-ru_4179",
+  "login": "v4-online-atol-ru",
+  "password": "iGFFuihss",
+  "paymentTypes": Object {
+    "advance": 2,
+    "credit": 3,
+    "custom": 5,
+    "custom_2": 6,
+    "custom_3": 7,
+    "custom_4": 8,
+    "custom_5": 9,
+    "online": 1,
+    "other": 4,
+  },
+  "report": Object {
+    "get": [Function],
+  },
+  "sell": Object {
+    "correction": [Function],
+    "create": [Function],
+    "refund": [Function],
+  },
+  "supplier": Object {
+    "inn": "454545454545",
+    "name": "ООО «Ромашка»",
+    "phones": Array [
+      "+79627772211",
+      "+79627772200",
+    ],
+  },
+  "userAgent": "Atol-Online-Node/0.1",
+  "vatType": "vat18",
+}
+`;

@@ -1,7 +1,7 @@
 {
   "name": "atol-online",
   "description": "Atol.Online for Node JS",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "main": "dist/index.js",
   "repository": {
     "url": "git://github.com/andreystepanov/atol-online.git"
@@ -19,7 +19,7 @@
   "author": "Andrey Stepanov <me@andreystepanov.com> (https://andreystepanov.com/)",
   "license": "MIT",
   "scripts": {
-    "test": "./node_modules/.bin/jest src/__tests__/*",
+    "test": "./node_modules/.bin/jest src/*",
     "test:watch": "yarn test -- --watch",
     "build": "yarn prettier && yarn test && ./node_modules/.bin/babel src/index.js --out-file dist/index.js",
     "prepublish": "yarn run build",
