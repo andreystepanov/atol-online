@@ -10,12 +10,22 @@ var _moment = _interopRequireDefault(require("moment"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
+
+function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
+
 const http = _axios.default.create();
 
 http.interceptors.response.use(res => {
-  const {
-    data
-  } = res;
+  const data = res.data;
 
   if (!data) {
     return Promise.reject(res);
@@ -26,10 +36,10 @@ http.interceptors.response.use(res => {
   }
 
   return res;
-}, ({
-  response,
-  ...error
-}) => {
+}, (_ref) => {
+  let response = _ref.response,
+      error = _objectWithoutProperties(_ref, ["response"]);
+
   if (response) {
     error.statusText = response.statusText;
     error.status = response.status;
@@ -55,7 +65,7 @@ module.exports = class Atol {
       supplier: null
     });
 
-    optns.agent = _underscore.default.defaults(optns.agent, {
+    optns.agent = _underscore.default.defaults(optns.agent || {}, {
       type: process.env.ATOL_AGENT_TYPE,
       phones: process.env.ATOL_AGENT_PHONES
     });
@@ -163,20 +173,17 @@ module.exports = class Atol {
   }
 
   static formatResponse(res) {
-    const {
-      request: {
-        _headers: reqHeaders,
-        ...request
-      },
-      config: {
-        sentAt,
-        url,
-        params,
-        data
-      },
-      status,
-      ...response
-    } = res;
+    const _res$request = res.request,
+          reqHeaders = _res$request._headers,
+          request = _objectWithoutProperties(_res$request, ["_headers"]),
+          _res$config = res.config,
+          sentAt = _res$config.sentAt,
+          url = _res$config.url,
+          params = _res$config.params,
+          data = _res$config.data,
+          status = res.status,
+          response = _objectWithoutProperties(res, ["request", "config", "status"]);
+
     let requestBody;
 
     try {
@@ -206,42 +213,50 @@ module.exports = class Atol {
     return formattedResponse;
   }
 
-  async call(method = 'get', endpoint = '', {
+  call(method = 'get', endpoint = '', {
     data = null,
     params = null
   } = {}) {
-    const token = await this.authenticate();
-    const options = {
-      method,
-      url: `${this.apiUrl}/${this.group}/${endpoint}`,
-      data,
-      params,
-      headers: {
-        'User-Agent': this.userAgent,
-        Token: token
-      },
-      sentAt: (0, _moment.default)()
-    };
-    return http.request(options).then(Atol.formatResponse).catch(Atol.formatResponse);
+    var _this = this;
+
+    return _asyncToGenerator(function* () {
+      const token = yield _this.authenticate();
+      const options = {
+        method,
+        url: `${_this.apiUrl}/${_this.group}/${endpoint}`,
+        data,
+        params,
+        headers: {
+          'User-Agent': _this.userAgent,
+          Token: token
+        },
+        sentAt: (0, _moment.default)()
+      };
+      return http.request(options).then(Atol.formatResponse).catch(Atol.formatResponse);
+    })();
   }
 
-  async authenticate() {
-    if (this.apiToken) {
-      return this.apiToken;
-    }
+  authenticate() {
+    var _this2 = this;
 
-    await http.post(`${this.apiUrl}/getToken`, {
-      login: this.login,
-      pass: this.password
-    }, {
-      headers: {
-        'User-Agent': this.userAgent
+    return _asyncToGenerator(function* () {
+      if (_this2.apiToken) {
+        return _this2.apiToken;
       }
-    }).then(res => {
-      this.apiToken = res.data.token;
-      return res.data.token;
-    }).catch(error => Promise.reject(error.response.data));
-    return this.apiToken;
+
+      yield http.post(`${_this2.apiUrl}/getToken`, {
+        login: _this2.login,
+        pass: _this2.password
+      }, {
+        headers: {
+          'User-Agent': _this2.userAgent
+        }
+      }).then(res => {
+        _this2.apiToken = res.data.token;
+        return res.data.token;
+      }).catch(error => Promise.reject(error.response.data));
+      return _this2.apiToken;
+    })();
   }
 
   static timestamp(input = null, inputFormat = null) {
@@ -257,11 +272,11 @@ module.exports = class Atol {
     return phones;
   }
 
-  static prepareAgent({
-    type,
-    phones,
-    ...rest
-  } = {}) {
+  static prepareAgent(_ref2 = {}) {
+    let type = _ref2.type,
+        phones = _ref2.phones,
+        rest = _objectWithoutProperties(_ref2, ["type", "phones"]);
+
     const formattedPhones = Atol.formatPhones(phones);
     const agent = {
       type
@@ -276,9 +291,9 @@ module.exports = class Atol {
     }
 
     if (advancedTypes.includes(type)) {
-      agent[type] = { ..._underscore.default.pick(rest, allowedFields),
+      agent[type] = _objectSpread({}, _underscore.default.pick(rest, allowedFields), {
         phones: formattedPhones
-      };
+      });
     }
 
     return agent;
@@ -289,8 +304,8 @@ module.exports = class Atol {
       return null;
     }
 
-    const supplier = { ...data
-    };
+    const supplier = _objectSpread({}, data);
+
     supplier.phones = Atol.formatPhones(supplier.phones || null);
     return _underscore.default.pick(supplier, ['phones', 'name', 'inn']);
   }
@@ -339,9 +354,7 @@ module.exports = class Atol {
     }) => {
       const price = parseFloat(itemPrice.toFixed(2));
       const sum = parseFloat((price * quantity).toFixed(2));
-      const {
-        vatType
-      } = this;
+      const vatType = this.vatType;
       const agentInfo = this.agent && agent !== false ? Atol.prepareAgent(_underscore.default.defaults(agent, this._originalAgent)) : null;
       const supplierInfo = agentInfo ? Atol.prepareSupplier(_underscore.default.defaults(supplier, this._originalSupplier)) : null;
       const item = {

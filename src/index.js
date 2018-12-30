@@ -50,7 +50,7 @@ module.exports = class Atol {
       supplier: null,
     })
 
-    optns.agent = underscore.defaults(optns.agent, {
+    optns.agent = underscore.defaults(optns.agent || {}, {
       type: process.env.ATOL_AGENT_TYPE,
       phones: process.env.ATOL_AGENT_PHONES,
     })
