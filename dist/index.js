@@ -254,7 +254,7 @@ module.exports = class Atol {
       }).then(res => {
         _this2.apiToken = res.data.token;
         return res.data.token;
-      }).catch(error => Promise.reject(error.response.data));
+      }).catch(error => Promise.reject(error.data));
       return _this2.apiToken;
     })();
   }

@@ -266,7 +266,7 @@ module.exports = class Atol {
         this.apiToken = res.data.token
         return res.data.token
       })
-      .catch(error => Promise.reject(error.response.data))
+      .catch(error => Promise.reject(error.data))
 
     return this.apiToken
   }
