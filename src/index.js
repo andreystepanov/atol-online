@@ -246,7 +246,7 @@ module.exports = class Atol {
 
   async authenticate() {
     if (this.apiToken) {
-      return this.apiToken
+      // return this.apiToken
     }
 
     await http
