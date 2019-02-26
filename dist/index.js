@@ -240,8 +240,7 @@ module.exports = class Atol {
     var _this2 = this;
 
     return _asyncToGenerator(function* () {
-      if (_this2.apiToken) {
-        return _this2.apiToken;
+      if (_this2.apiToken) {// return this.apiToken
       }
 
       yield http.post(`${_this2.apiUrl}/getToken`, {
